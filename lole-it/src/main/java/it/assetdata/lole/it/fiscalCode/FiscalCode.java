@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.assetdata.lole.it;
+package it.assetdata.lole.it.fiscalCode;
 
-import it.assetdata.lole.common.Sex;
+import it.assetdata.lole.it.SexIt;
+import it.assetdata.valid.Conditions;
 
 import java.io.Serializable;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.joda.time.LocalDate;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 
 /**
- * Represents an Italian fiscal code (Codice fiscale) which refers to a physical person.
+ * Represents an Italian fiscal code (Codice fiscale) which refers to a physical
+ * person.
  */
+@Immutable
 public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCode> {
 	
 	/**
@@ -41,7 +46,13 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	private final LocalDate birthDate;
 	
 	/**
-	 * A control character used to validate the whole fiscal code and added to its end.
+	 * Conditions check utility.
+	 */
+	private final Conditions conditions;
+	
+	/**
+	 * A control character used to validate the whole fiscal code and added to
+	 * its end.
 	 */
 	private final Character controlCharacter;
 	
@@ -58,7 +69,7 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	/**
 	 * Referred person's sex used to create {@link #value}.
 	 */
-	private final Sex sex;
+	private final SexIt sex;
 	
 	/**
 	 * Referred person's surname used to create {@link #value}.
@@ -76,6 +87,8 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	 * 
 	 * @param birthDate
 	 *            referred person's date of birth
+	 * @param conditions
+	 *            check utility
 	 * @param controlCharacter
 	 *            control character
 	 * @param name
@@ -88,18 +101,24 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	 *            of the referred person
 	 * @param value
 	 *            representation of the whole fiscal code
-	 * @throws NullPointerException
-	 *             if any parameter is {@code null}
-	 * 
 	 */
-	public FiscalCode(final LocalDate birthDate, final Character controlCharacter, final String name, final String placeCode, final Sex sex, final String surname, final String value) {
-		this.birthDate = Preconditions.checkNotNull(birthDate);
-		this.controlCharacter = Preconditions.checkNotNull(controlCharacter);
-		this.name = Preconditions.checkNotNull(name);
-		this.placeCode = Preconditions.checkNotNull(placeCode);
-		this.sex = Preconditions.checkNotNull(sex);
-		this.surname = Preconditions.checkNotNull(surname);
-		this.value = Preconditions.checkNotNull(value);
+	public FiscalCode(
+			final LocalDate birthDate,
+			final Conditions conditions,
+			final Character controlCharacter,
+			final String name,
+			final String placeCode,
+			final SexIt sex,
+			final String surname,
+			final String value) {
+		this.birthDate = birthDate;
+		this.conditions = conditions;
+		this.controlCharacter = controlCharacter;
+		this.name = name;
+		this.placeCode = placeCode;
+		this.sex = sex;
+		this.surname = surname;
+		this.value = value;
 	}
 	
 	/**
@@ -118,11 +137,12 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int compareTo(final FiscalCode o) {
+	public int compareTo(@Nullable final FiscalCode o) {
+		final FiscalCode other = conditions.notNull(o);
 		return ComparisonChain.start()
-				.compare(value, o.value)
-				.compare(name, o.name)
-				.compare(surname, o.surname)
+				.compare(value, other.value)
+				.compare(name, other.name)
+				.compare(surname, other.surname)
 				.result();
 	}
 	
@@ -130,7 +150,7 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(final @Nullable Object obj) {
 		if (obj == null) {
 			return false;
 		} else if (obj == this) {
@@ -150,7 +170,8 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	}
 	
 	/**
-	 * Returns the referred person's date of birth used to create the value returned by {@link #getValue()}.
+	 * Returns the referred person's date of birth used to create the value
+	 * returned by {@link #getValue()}.
 	 * 
 	 * @return date of birth
 	 */
@@ -159,7 +180,8 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	}
 	
 	/**
-	 * Returns the control character used to validate the whole fiscal code value and placed to its end.
+	 * Returns the control character used to validate the whole fiscal code
+	 * value and placed to its end.
 	 * 
 	 * @return control character
 	 */
@@ -168,7 +190,8 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	}
 	
 	/**
-	 * Returns the referred person's name used to create the value returned by {@link #getValue()}.
+	 * Returns the referred person's name used to create the value returned by
+	 * {@link #getValue()}.
 	 * 
 	 * @return name
 	 */
@@ -177,7 +200,8 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	}
 	
 	/**
-	 * Returns the referred person's place of birth used to create the value returned by {@link #getValue()}.
+	 * Returns the referred person's place of birth used to create the value
+	 * returned by {@link #getValue()}.
 	 * 
 	 * @return place code
 	 */
@@ -186,16 +210,18 @@ public class FiscalCode implements Serializable, Cloneable, Comparable<FiscalCod
 	}
 	
 	/**
-	 * Returns the referred person's sex used to create the value returned by {@link #getValue()}.
+	 * Returns the referred person's sex used to create the value returned by
+	 * {@link #getValue()}.
 	 * 
 	 * @return sex
 	 */
-	public Sex getSex() {
+	public SexIt getSex() {
 		return sex;
 	}
 	
 	/**
-	 * Returns the referred person's surname used to create the value returned by {@link #getValue()}.
+	 * Returns the referred person's surname used to create the value returned
+	 * by {@link #getValue()}.
 	 * 
 	 * @return surname
 	 */

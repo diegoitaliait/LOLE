@@ -11,9 +11,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.LocalDate;
 
 /**
- * Test of {@link it.assetdata.aventinushr.util.FiscalCodeBuilder} class.
+ * Test of {@link FiscalCodeBuilder} class.
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({ "nls", "javadoc" })
 public class FiscalCodeBuilderTest {
 	
 	private static char[] chars = "QWERTYUIOPASDFGHJKLZXCVBNM ".toCharArray();
@@ -28,8 +28,10 @@ public class FiscalCodeBuilderTest {
 	}
 	
 	private static String generatePlaceCode() {
-		return RandomStringUtils.random(1, 0, FiscalCodeBuilderTest.chars.length, true, false, FiscalCodeBuilderTest.chars, FiscalCodeBuilderTest.random) + String.valueOf(FiscalCodeBuilderTest.random.nextInt(9) + 1)
-				+ String.valueOf(FiscalCodeBuilderTest.random.nextInt(9) + 1) + String.valueOf(FiscalCodeBuilderTest.random.nextInt(9) + 1);
+		return RandomStringUtils.random(1, 0, FiscalCodeBuilderTest.chars.length, true, false, FiscalCodeBuilderTest.chars, FiscalCodeBuilderTest.random)
+				+ String.valueOf(FiscalCodeBuilderTest.random.nextInt(9) + 1)
+				+ String.valueOf(FiscalCodeBuilderTest.random.nextInt(9) + 1)
+				+ String.valueOf(FiscalCodeBuilderTest.random.nextInt(9) + 1);
 	}
 	
 	private static Sex generateSex() {
